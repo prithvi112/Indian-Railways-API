@@ -1,0 +1,802 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Indian Railways Information System (IRIS API)",
+      "description": "Usage Instruction\n\n- To use this system, you will require an Authorization key for performing any operations [j9vwvdC9rA6OmQzgwS6eq9ZXAkLz6Lab4EMU1EN1]\n- On receiving the key, click on 'Authorize' button and provide the key\n- Click on the API resource that you want to use.\n- Click on 'Try it out' and provide suitable parameters, if required\n- Click on 'Execute'\n- On successful authorization, you will receive the correct response with status code 200\n\n Enjoy!!",
+      "version": "2.0"
+    },
+    "servers": [
+      {
+        "url": "https://d3gtv471y7lib.cloudfront.net/iris-service-api"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Overview"
+      },
+      {
+        "name": "Station"
+      },
+      {
+        "name": "Train"
+      },
+      {
+        "name": "Route"
+      }
+    ],
+    "paths": {
+      "/v2/railways/overview": {
+        "get": {
+          "tags": [
+            "Overview"
+          ],
+          "summary": "View total trains & stations present",
+          "description": "View trains & stations across all the states",
+          "operationId": "overviewData",
+          "responses": {
+            "200": {
+              "description": "Successful Operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/overviewSchema"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/stations": {
+        "get": {
+          "tags": [
+            "Station"
+          ],
+          "summary": "View station information",
+          "description": "View information of any station by providing station code",
+          "operationId": "stationData",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "stationCode",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Station code of the station to be fetched [Example: HWH]",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/stationSchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/stations/codes": {
+        "get": {
+          "tags": [
+            "Station"
+          ],
+          "summary": "View list of all stations",
+          "description": "View code and name of all stations",
+          "operationId": "stationCodeData",
+          "responses": {
+            "200": {
+              "description": "Successful Operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/stationCodeSchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/trains": {
+        "get": {
+          "tags": [
+            "Train"
+          ],
+          "summary": "View train information",
+          "description": "View information of any train by providing train number",
+          "operationId": "trainData",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "trainNumber",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Train number of the train to be fetched [Example: 12222]",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Operation [Values of -1 or empty string denotes unavailable value]",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/trainSchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/trains/numbers": {
+        "get": {
+          "tags": [
+            "Train"
+          ],
+          "summary": "View list of all trains",
+          "description": "View number and name of all stations",
+          "operationId": "trainNumberData",
+          "responses": {
+            "200": {
+              "description": "Successful Operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/trainNumberSchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/route/{type}": {
+        "get": {
+          "tags": [
+            "Route"
+          ],
+          "summary": "View halt information of a particular route",
+          "description": "View halt information for a particular train for a particular station or view the entire route of the train\n\n type = all; Fetch entire route\n\n type = station; Fetch for particular station",
+          "operationId": "trainStationData",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "type",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Request type for fetching entire route or particular halt [Permissible Values - all, station]",
+              "required": true
+            },
+            {
+              "in": "query",
+              "name": "trainNumber",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Train number of the train route [Example: 12222]",
+              "required": true
+            },
+            {
+              "in": "query",
+              "name": "stationCode",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Station code of the particular halt [Example: TATA]\n\n NOTE: Parameter required if type = station"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/trainRouteSchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      },
+      "/v2/railways/route/availability": {
+        "get": {
+          "tags": [
+            "Route"
+          ],
+          "summary": "View train availability for a route",
+          "description": "View availability information of all the trains available for a given source and desttination",
+          "operationId": "availabilityData",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "sourceStation",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Station code of the source station [Example: HWH]",
+              "required": true
+            },
+            {
+              "in": "query",
+              "name": "destinationStation",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Station code of the destination station [Example: PUNE]",
+              "required": true
+            },
+            {
+              "in": "query",
+              "name": "journeyDate",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Date of journey in 'dd-mm-yyyy' format [Example: 26-08-2023]",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Operation [Value of 0 for class fare denotes unavailable data]",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/availabilitySchema"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request [Required parameter not provided]"
+            },
+            "401": {
+              "description": "Access Unauthorized [No API key provided]"
+            },
+            "403": {
+              "description": "Access Forbidden [Incorrect API key provided]"
+            },
+            "404": {
+              "description": "Resource Not Found [Requested information does not exist]"
+            },
+            "502": {
+              "description": "Bad Gateway [Invalid response from server]"
+            },
+            "504": {
+              "description": "Gateway Timeout [Request has timed out]"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "default": "success"
+            },
+            "result": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
+        },
+        "overview": {
+          "type": "object",
+          "properties": {
+            "trains": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "format": "int32",
+                  "default": 1000
+                }
+              }
+            },
+            "stations": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "format": "int32",
+                  "default": 1000
+                },
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "default": "West Bengal"
+                      },
+                      "count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 568
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "station": {
+          "type": "object",
+          "properties": {
+            "stationCode": {
+              "type": "string",
+              "default": "HWH"
+            },
+            "stationName": {
+              "type": "string",
+              "default": "Howrah Junction"
+            },
+            "stateName": {
+              "type": "string",
+              "default": "West Bengal"
+            },
+            "railwaysZoneShort": {
+              "type": "string",
+              "default": "ER"
+            },
+            "railwaysZoneFull": {
+              "type": "string",
+              "default": "Eastern"
+            }
+          }
+        },
+        "train": {
+          "type": "object",
+          "properties": {
+            "trainNumber": {
+              "type": "string",
+              "default": "12222"
+            },
+            "trainName": {
+              "type": "string",
+              "default": "Howrah Pune AC Duronto Express"
+            },
+            "sourceStationCode": {
+              "type": "string",
+              "default": "HWH"
+            },
+            "sourceStationName": {
+              "type": "string",
+              "default": "Howrah Junction"
+            },
+            "destinationStationCode": {
+              "type": "string",
+              "default": "PUNE"
+            },
+            "destinationStationName": {
+              "type": "string",
+              "default": "Pune Junction"
+            },
+            "trainType": {
+              "type": "string",
+              "default": "Duronto"
+            },
+            "serviceDays": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "default": "Monday"
+              }
+            },
+            "coachClass": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "classCode": {
+                    "type": "string",
+                    "default": "3A"
+                  },
+                  "className": {
+                    "type": "string",
+                    "default": "Three Tier AC"
+                  }
+                }
+              }
+            },
+            "travelDuration": {
+              "type": "string",
+              "default": "28 hrs"
+            },
+            "travelDistance": {
+              "type": "integer",
+              "format": "int32",
+              "default": 2017
+            },
+            "stopCount": {
+              "type": "integer",
+              "format": "int32",
+              "default": 9
+            },
+            "averageSpeed": {
+              "type": "integer",
+              "format": "int32",
+              "default": 72
+            }
+          }
+        },
+        "trainRoute": {
+          "type": "object",
+          "properties": {
+            "trainNumber": {
+              "type": "string",
+              "default": "12222"
+            },
+            "trainName": {
+              "type": "string",
+              "default": "Howrah Pune AC Duronto Express"
+            },
+            "trainRoute": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "stationCode": {
+                    "type": "string",
+                    "default": "TATA"
+                  },
+                  "stationName": {
+                    "type": "string",
+                    "default": "Tatanagar Junction"
+                  },
+                  "stateName": {
+                    "type": "string",
+                    "default": "Jharkhand"
+                  },
+                  "arrivalTime": {
+                    "type": "string",
+                    "default": "08:48 AM"
+                  },
+                  "departureTime": {
+                    "type": "string",
+                    "default": "08:58 AM"
+                  },
+                  "haltDuration": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 10
+                  },
+                  "distanceTravelled": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 250
+                  },
+                  "haltNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "trainAvailability": {
+          "type": "object",
+          "properties": {
+            "trainNumber": {
+              "type": "string",
+              "default": "12222"
+            },
+            "trainName": {
+              "type": "string",
+              "default": "Howrah Pune AC Duronto Express"
+            },
+            "sourceStationCode": {
+              "type": "string",
+              "default": "HWH"
+            },
+            "sourceStationName": {
+              "type": "string",
+              "default": "Howrah Junction"
+            },
+            "departureTime": {
+              "type": "string",
+              "default": "26 August 2023 05:45 AM"
+            },
+            "destinationStationCode": {
+              "type": "string",
+              "default": "PUNE"
+            },
+            "destinationStationName": {
+              "type": "string",
+              "default": "Pune Junction"
+            },
+            "arrivalTime": {
+              "type": "string",
+              "default": "27 August 2023 09:45 AM"
+            },
+            "duration": {
+              "type": "string",
+              "default": "28 h 00 m"
+            },
+            "distanceTravelled": {
+              "type": "integer",
+              "format": "int32",
+              "default": 2017
+            },
+            "class": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "classCode": {
+                    "type": "string",
+                    "default": "3A"
+                  },
+                  "className": {
+                    "type": "string",
+                    "default": "Three Tier AC"
+                  },
+                  "classFare": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 3945
+                  },
+                  "classAvailability": {
+                    "type": "string",
+                    "default": "AVAILABLE-146"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "overviewSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/overview"
+              }
+            }
+          }
+        },
+        "stationSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/station"
+              }
+            }
+          }
+        },
+        "trainSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/train"
+              }
+            }
+          }
+        },
+        "stationCodeSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "stationCode": {
+                    "type": "string",
+                    "default": "HWH"
+                  },
+                  "stationName": {
+                    "type": "string",
+                    "default": "Howrah Junction"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "trainNumberSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "trainNumber": {
+                    "type": "string",
+                    "default": "12222"
+                  },
+                  "stationName": {
+                    "type": "string",
+                    "default": "Howrah Pune AC Duronto Express"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "trainRouteSchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/trainRoute"
+              }
+            }
+          }
+        },
+        "availabilitySchema": {
+          "type": "object",
+          "properties": {
+            "responseMetadata": {
+              "$ref": "#/components/schemas/metadata"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/trainAvailability"
+              }
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "api_auth_key": {
+          "type": "apiKey",
+          "name": "X-Api-Key",
+          "in": "header"
+        }
+      }
+    },
+    "security": [
+      {
+        "api_auth_key": []
+      }
+    ]
+  }
