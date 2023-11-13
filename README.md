@@ -2,7 +2,7 @@
 
 For viewing and interacting with the API, use the [IRIS Swagger UI](https://d3gtv471y7lib.cloudfront.net/iris-service-api/swagger.html)
 
-### API Resource Checklist [10]
+### API Resource Checklist [9]
 
 Base Path: /iris-service-api/v2/railways
 
@@ -12,7 +12,6 @@ Base Path: /iris-service-api/v2/railways
 - [x] /stations/codes
 - [x] /trains
 - [x] /trains/numbers
-- [x] /trains/status
 - [x] /route/all
 - [x] /route/station
 - [x] /route/availabilty
