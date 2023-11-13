@@ -1,0 +1,20 @@
+name: Deploy Python Libraries as Lambda Layers
+
+on:
+  push:
+    paths:
+      - lambda_functions/layer.txt
+
+jobs:
+
+  deployLayer:
+    runs-on: self-hosted
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaLayer
+        name: Deploy lambda layer in AWS
+        run: |
+          cd ./aws_deployments/
+          bash lambda_layer_deploy.sh "lambda_functions" ${{ secrets.library_bucket_name }}

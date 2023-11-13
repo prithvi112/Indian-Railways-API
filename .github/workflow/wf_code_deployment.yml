@@ -1,0 +1,115 @@
+name: Deploy Python Code to Lambda Functions
+
+on:
+  push:
+    paths:
+      - lambda_functions/*.py
+      - lambda_functions/lib/*
+
+env:
+  aws_region: ${{ secrets.aws_region }}
+
+jobs:
+
+  getChangedFile:
+    runs-on: self-hosted
+    outputs:
+      filename: ${{ steps.changedFile.outputs.file }}
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - id: changedFile
+        name: Get Changed File
+        run: |
+          filepath=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          echo "Committed Filepath - $filepath"
+          filepath=`echo $filepath | awk -F"/" '{print($2)}'`
+          echo "Committed File - $filepath"
+          echo "file=$filepath" >> $GITHUB_OUTPUT
+
+  deployLoadInvoker:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_load_invoker.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy Data Load Invoker Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_load_invoker.py,lib/helper.py" "iris_load_invoker"
+
+  deployDbLoader:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_db_loader.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy DB Loader Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_db_loader.py,lib/helper.py" "iris_db_loader"
+
+  deployCacheLoader:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_cache_loader.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy Redis Loader Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_cache_loader.py,lib/helper.py" "iris_cache_loader"
+
+  deploySearchLoader:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_search_loader.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy Search Loader Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_search_loader.py,lib/helper.py" "iris_search_loader"
+
+  deployApiHandler:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_api_handler.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy API Handler Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_api_handler.py,lib/helper.py" "iris_api_handler"
+
+  deployApiAuthorizer:
+    runs-on: self-hosted
+    needs: getChangedFile
+    if: ${{ needs.getChangedFile.outputs.filename == 'iris_api_authorizer.py' || needs.getChangedFile.outputs.filename == 'lib' }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: deployLambdaCode
+        name: Deploy API Authorizer Code
+        run: |
+          cd ./lambda_functions/
+          python3 ../aws_deployments/lambda_code_deploy.py "iris_api_authorizer.py,lib/helper.py" "iris_api_authorizer"

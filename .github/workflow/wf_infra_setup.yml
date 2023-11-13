@@ -1,0 +1,83 @@
+name: Deploy AWS Resources via Terraform
+
+on:
+  push:
+    paths:
+      - infrastructure/**/*
+
+env:
+  AWS_REGION: ${{ secrets.aws_region }}
+  TF_VAR_aws_region_name: ${{ secrets.aws_region }}
+  TF_VAR_aws_account_id: ${{ secrets.aws_account_id }}
+  TF_VAR_api_id: ${{ secrets.api_id }}
+  TF_VAR_swagger_bucket_name: ${{ secrets.swagger_bucket_name }}
+  TF_VAR_rds_db_name: ${{ secrets.rds_db_name }}
+  TF_VAR_redis_cache_hostname: ${{ secrets.redis_cache_hostname }}
+  TF_VAR_redis_cache_password: ${{ secrets.redis_cache_password }}
+  TF_VAR_rds_db_hostname: ${{ secrets.rds_db_hostname }}
+  TF_VAR_rds_db_username: ${{ secrets.rds_db_username }}
+  TF_VAR_rds_db_password: ${{ secrets.rds_db_password }}
+  TF_VAR_api_auth_key: ${{ secrets.api_auth_key }}
+  TF_VAR_search_hostname: ${{ secrets.search_hostname }}
+  TF_VAR_search_username: ${{ secrets.search_username }}
+  TF_VAR_search_password: ${{ secrets.search_password }}
+
+jobs:
+
+  initialize:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: infrastructure
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - id: moveDependents
+        name: Move dependent library to working directory
+        run: |
+          cp provider.tf variables.tf resource/
+
+      - id: initializeSetup
+        name: Initialize Terraform
+        run: |
+          terraform -chdir=resource/ init -backend-config="bucket=${{ secrets.state_bucket_name }}"
+
+  validate:
+    runs-on: self-hosted
+    needs: initialize
+    defaults:
+      run:
+        working-directory: infrastructure
+    steps:
+
+      - id: validateCode
+        name: Validate Terraform scripts
+        run: |
+          terraform -chdir=resource/ validate
+
+  build:
+    runs-on: self-hosted
+    needs: validate
+    defaults:
+      run:
+        working-directory: infrastructure
+    steps:
+
+      - id: buildPlan
+        name: Build plan for deployment
+        run: |
+          terraform -chdir=resource/ plan
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    defaults:
+      run:
+        working-directory: infrastructure
+    steps:
+
+      - id: deployResource
+        name: Deploy resources in AWS
+        run: |
+          terraform -chdir=resource/ apply -auto-approve
